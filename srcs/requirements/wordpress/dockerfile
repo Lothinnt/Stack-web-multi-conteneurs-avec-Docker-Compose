@@ -1,0 +1,27 @@
+FROM debian:bookworm
+
+# Installer PHP-FPM (8.2 natif sur bookworm), le driver mysql et le client mariadb
+RUN apt-get update && apt-get install -y \
+    php8.2-fpm \
+    php8.2-mysql \
+    mariadb-client \
+    curl \
+    ca-certificates && \
+    mkdir -p /run/php && \
+    chown www-data:www-data /run/php
+
+# Copier le fichier de configuration php (php-fpm ecoute sur 0.0.0.0:9000)
+COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
+
+# Installer WordPress CLI
+RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x /usr/local/bin/wp
+
+# Copier le script de lancement WP
+COPY ./conf/script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
+
+EXPOSE 9000
+
+# Le script installe WordPress dans le volume puis lance PHP-FPM au premier plan
+CMD ["/usr/local/bin/script.sh"]

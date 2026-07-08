@@ -1,0 +1,11 @@
+FROM debian:bookworm
+
+RUN apt-get update && apt-get install -y mariadb-server tini && \
+    rm -rf /var/lib/mysql/*
+
+EXPOSE 3306
+
+COPY ./conf/script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/script.sh"]

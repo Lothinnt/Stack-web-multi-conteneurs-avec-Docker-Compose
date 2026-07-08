@@ -1,0 +1,23 @@
+# --- Secrets : NE JAMAIS committer ---
+srcs/.env
+**/.env
+
+# --- Donnees des volumes (base MariaDB, fichiers WordPress) ---
+# Ancrees a la racine (/) pour ne pas ignorer srcs/requirements/mariadb/
+# sur un systeme de fichiers insensible a la casse (macOS).
+/data/
+/MariaDB/
+
+# --- Anciennes pages statiques (remplacees par WordPress installe dans le volume) ---
+/html_page/
+
+# --- Fichiers macOS / editeurs ---
+.DS_Store
+**/.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# --- Google Docs deposes dans le dossier Drive ---
+*.gdoc

@@ -1,0 +1,17 @@
+FROM debian:bookworm
+
+RUN apt-get update && apt-get install -y \
+    nginx \
+    openssl
+
+RUN mkdir -p /etc/nginx/ssl
+
+#Création de certificat auto signée sans mdp (-nodes) qui seront stocker dans les fichiers ssl avec les infos entre guillemets
+RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=lnjoh-tc.42.fr/UID=lnjoh-tc"
+
+COPY ./conf/default /etc/nginx/sites-available/default
+
+EXPOSE 443
+
+# Lance Nginx au premier plan (avec le flag -g) comme ça le conteneur s'arrete pas
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
